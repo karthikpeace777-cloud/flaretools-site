@@ -1,12 +1,11 @@
 // Initialize Firebase
 const firebaseConfig = {
-    // Your Firebase config here
-    apiKey: "YOUR_API_KEY",
-    authDomain: "your-project-id.firebaseapp.com",
-    projectId: "your-project-id",
-    storageBucket: "your-project-id.appspot.com",
-    messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-    appId: "YOUR_APP_ID"
+    apiKey: "AIzaSyDUAsWKHBxX-FzxNDexb2I5zk-XB25rKOg",
+    authDomain: "flaretools.firebaseapp.com",
+    projectId: "flaretools",
+    storageBucket: "flaretools.firebasestorage.app",
+    messagingSenderId: "510853583077",
+    appId: "1:510853583077:web:65fa718a22c6126b9b840c"
 };
 
 // Initialize Firebase
