@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Discover and Rate Developer Tools – Flare Tools</title>
+    <meta name="description" content="Discover, rate, and review the best developer tools. Find the perfect tools for your development workflow and share your experience with the community.">
+    <meta name="keywords" content="developer tools, programming tools, code tools, development resources, tool reviews, developer resources">
+    <meta property="og:title" content="Discover and Rate Developer Tools – Flare Tools">
+    <meta property="og:description" content="Find and review the best developer tools for your workflow. Join our community of developers sharing their experiences.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://flare-tools.example.com">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Discover and Rate Developer Tools – Flare Tools">
+    <meta name="twitter:description" content="Find and review the best developer tools for your development workflow.">
+    <!-- Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-auth-compat.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Custom Scripts -->
+    <script src="js/auth.js"></script>
+    <script src="js/nav.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <!-- Navigation Component -->
+    <app-navigation></app-navigation>
+
+    <!-- Hero Section with Trending Tools -->
+    <div class="bg-white overflow-hidden">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
+            <div class="lg:text-center">
+                <h1 class="text-3xl tracking-tight font-extrabold text-gray-900 sm:text-4xl md:text-5xl">
+                    <span class="block">Discover, Rate, and</span>
+                    <span class="block text-indigo-600">Share Developer Tools</span>
+                </h1>
+                <p class="mt-3 max-w-2xl mx-auto text-base text-gray-500 sm:mt-4 sm:text-lg md:mt-5 md:text-xl text-center">
+                    The best place to find and review the latest developer tools, libraries, and resources.
+                </p>
+                <div class="mt-6 flex flex-col space-y-3 sm:space-y-0 sm:space-x-4 sm:flex-row sm:justify-center">
+                    <div class="rounded-md shadow w-full sm:w-auto">
+                        <a href="/tools" class="w-full flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:px-8 sm:py-3 md:py-3 md:text-lg md:px-10">
+                            Upcoming Tools
+                        </a>
+                    </div>
+                    <div class="rounded-md shadow w-full sm:w-auto">
+                        <a href="#" class="w-full flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-indigo-700 bg-indigo-100 hover:bg-indigo-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:px-8 sm:py-3 md:py-3 md:text-lg md:px-10">
+                            Learn More
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Trending Tools Preview -->
+            <div class="mt-12">
+                <h2 class="text-2xl font-extrabold text-gray-900 sm:text-3xl md:text-4xl text-center">
+                    Trending Now
+                </h2>
+                <p class="mt-2 max-w-2xl mx-auto text-lg text-gray-500 text-center sm:mt-3 sm:text-xl">
+                    Check out what's popular in the developer community
+                </p>
+                
+                <div id="trending-tools-preview" class="mt-8 grid gap-6 sm:gap-8 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+                    <!-- Trending tools will be loaded here dynamically -->
+                    <div class="col-span-full sm:col-span-2 lg:col-span-3 py-6">
+                        <div class="animate-pulse flex flex-col items-center">
+                            <div class="h-4 bg-gray-200 rounded w-3/4 sm:w-1/2 mb-4"></div>
+                            <div class="h-4 bg-gray-200 rounded w-1/2 sm:w-1/3"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mt-8 text-center">
+                    <a href="/tools" class="text-indigo-600 hover:text-indigo-800 font-medium">
+                        View all trending tools →
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Featured Categories Section -->
+    <div class="py-12 sm:py-16 bg-gray-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center px-2 sm:px-0">
+                <h2 class="text-2xl font-extrabold text-gray-900 sm:text-3xl md:text-4xl">
+                    Popular Categories
+                </h2>
+                <p class="mt-2 max-w-2xl mx-auto text-lg text-gray-500 sm:mt-3 sm:text-xl">
+                    Explore tools by category
+                </p>
+            </div>
+
+            <div class="mt-8 sm:mt-12 grid gap-6 sm:gap-8 grid-cols-2 sm:grid-cols-3 lg:grid-cols-6">
+                <a href="tools.html?category=frontend" class="flex flex-col items-center p-4 bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200">
+                    <div class="p-3 bg-indigo-100 rounded-full">
+                        <svg class="w-8 h-8 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                        </svg>
+                    </div>
+                    <span class="mt-2 text-sm font-medium text-gray-900">Frontend</span>
+                </a>
+                <a href="tools.html?category=backend" class="flex flex-col items-center p-4 bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200">
+                    <div class="p-3 bg-indigo-100 rounded-full">
+                        <svg class="w-8 h-8 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path>
+                        </svg>
+                    </div>
+                    <span class="mt-2 text-sm font-medium text-gray-900">Backend</span>
+                </a>
+                <a href="tools.html?category=mobile" class="flex flex-col items-center p-4 bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200">
+                    <div class="p-3 bg-indigo-100 rounded-full">
+                        <svg class="w-8 h-8 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
+                        </svg>
+                    </div>
+                    <span class="mt-2 text-sm font-medium text-gray-900">Mobile</span>
+                </a>
+                <a href="tools.html?category=devops" class="flex flex-col items-center p-4 bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200">
+                    <div class="p-3 bg-indigo-100 rounded-full">
+                        <svg class="w-8 h-8 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                        </svg>
+                    </div>
+                    <span class="mt-2 text-sm font-medium text-gray-900">DevOps</span>
+                </a>
+                <a href="tools.html?category=ai-ml" class="flex flex-col items-center p-4 bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200">
+                    <div class="p-3 bg-indigo-100 rounded-full">
+                        <svg class="w-8 h-8 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                        </svg>
+                    </div>
+                    <span class="mt-2 text-sm font-medium text-gray-900">AI/ML</span>
+                </a>
+                <a href="tools.html?category=database" class="flex flex-col items-center p-4 bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200">
+                    <div class="p-3 bg-indigo-100 rounded-full">
+                        <svg class="w-8 h-8 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4"></path>
+                        </svg>
+                    </div>
+                    <span class="mt-2 text-sm font-medium text-gray-900">Database</span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            try {
+                // Initialize Firebase if not already initialized
+                if (!firebase.apps.length) {
+                    firebase.initializeApp({
+                        apiKey: "YOUR_API_KEY",
+                        authDomain: "your-app.firebaseapp.com",
+                        projectId: "your-project-id",
+                        storageBucket: "your-app.appspot.com",
+                        messagingSenderId: "1234567890",
+                        appId: "1:1234567890:web:abcdef123456"
+                    });
+                }
+                
+                // Get trending tools (top 6 by upvotes)
+                const toolsQuery = firebase.firestore().collection('tools')
+                    .orderBy('upvotes', 'desc')
+                    .limit(6);
+                
+                const toolsContainer = document.getElementById('trending-tools-preview');
+                
+                const querySnapshot = await toolsQuery.get();
+                
+                if (querySnapshot.empty) {
+                    toolsContainer.innerHTML = `
+                        <div class="col-span-3 text-center py-8">
+                            <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                            <h3 class="mt-2 text-sm font-medium text-gray-900">No trending tools yet</h3>
+                            <p class="mt-1 text-sm text-gray-500">Check back later for trending tools or explore all tools</p>
+                            <div class="mt-6">
+                                <a href="/tools" class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                                    <svg class="-ml-1 mr-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                        <path fill-rule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clip-rule="evenodd" />
+                                    </svg>
+                                    Explore All Tools
+                                </a>
+                            </div>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                // Get user's votes if logged in
+                let userVotes = [];
+                if (firebase.auth().currentUser) {
+                    const votesSnapshot = await firebase.firestore().collection('votes')
+                        .where('userId', '==', firebase.auth().currentUser.uid)
+                        .get();
+                    userVotes = votesSnapshot.docs.map(doc => doc.data().toolId);
+                }
+                
+                // Render tools
+                toolsContainer.innerHTML = '';
+                querySnapshot.forEach(doc => {
+                    const tool = { id: doc.id, ...doc.data() };
+                    const hasVoted = userVotes.includes(tool.id);
+                    
+                    // Get first letter of tool name for the icon
+                    const iconLetter = tool.name ? tool.name.charAt(0).toUpperCase() : 'T';
+                    const bgColors = ['bg-indigo-100', 'bg-green-100', 'bg-blue-100', 'bg-purple-100', 'bg-pink-100'];
+                    const textColors = ['text-indigo-600', 'text-green-600', 'text-blue-600', 'text-purple-600', 'text-pink-600'];
+                    const randomIndex = Math.floor(Math.random() * bgColors.length);
+                    
+                    const toolCard = document.createElement('div');
+                    toolCard.className = 'bg-white overflow-hidden shadow rounded-lg hover:shadow-md transition-shadow duration-300';
+                    toolCard.innerHTML = `
+                        <div class="p-6">
+                            <div class="flex items-center">
+                                <div class="flex-shrink-0 ${bgColors[randomIndex]} rounded-md p-3">
+                                    <span class="${textColors[randomIndex]} text-xl font-bold">${iconLetter}</span>
+                                </div>
+                                <div class="ml-4 overflow-hidden">
+                                    <h3 class="text-lg font-medium text-gray-900 truncate">${escapeHtml(tool.name)}</h3>
+                                    <p class="text-sm text-gray-500 truncate">${tool.description ? escapeHtml(tool.description) : 'No description available'}</p>
+                                </div>
+                            </div>
+                            <div class="mt-4 flex items-center justify-between">
+                                <div class="flex items-center">
+                                    <svg class="h-5 w-5 text-yellow-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                                    </svg>
+                                    <span class="ml-1 text-sm font-medium text-gray-700">${tool.upvotes || 0} upvote${tool.upvotes !== 1 ? 's' : ''}</span>
+                                </div>
+                                <a href="tool-details.html?id=${tool.id}" class="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-indigo-700 bg-indigo-100 hover:bg-indigo-200">
+                                    View Tool
+                                </a>
+                            </div>
+                        </div>
+                    `;
+                    toolsContainer.appendChild(toolCard);
+                });
+                
+            } catch (error) {
+                console.error('Error loading trending tools:', error);
+                const toolsContainer = document.getElementById('trending-tools');
+                toolsContainer.innerHTML = `
+                    <div class="col-span-3 text-center py-8 text-red-600">
+                        Error loading trending tools. Please try again later.
+                    </div>
+                `;
+            }
+        });
+        
+        // Helper function to escape HTML
+        function escapeHtml(unsafe) {
+            if (!unsafe) return '';
+            return unsafe
+                .toString()
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
+        }
+    </script>
+
+    <!-- Features Section -->
+    <div class="py-12 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="lg:text-center">
+                <h2 class="text-base text-indigo-600 font-semibold tracking-wide uppercase">Features</h2>
+                <p class="mt-2 text-3xl leading-8 font-extrabold tracking-tight text-gray-900 sm:text-4xl">
+                    A better way to find developer tools
+                </p>
+            </div>
+
+            <div class="mt-10">
+                <div class="space-y-10 md:space-y-0 md:grid md:grid-cols-2 md:gap-x-8 md:gap-y-10">
+                    <div class="relative">
+                        <div class="absolute flex items-center justify-center h-12 w-12 rounded-md bg-indigo-500 text-white">
+                            <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                            </svg>
+                        </div>
+                        <div class="ml-16">
+                            <h3 class="text-lg leading-6 font-medium text-gray-900">Discover</h3>
+                            <p class="mt-2 text-base text-gray-500">Find the best developer tools for your stack with our curated collections and smart search.</p>
+                        </div>
+                    </div>
+
+                    <div class="relative">
+                        <div class="absolute flex items-center justify-center h-12 w-12 rounded-md bg-indigo-500 text-white">
+                            <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
+                            </svg>
+                        </div>
+                        <div class="ml-16">
+                            <h3 class="text-lg leading-6 font-medium text-gray-900">Rate & Review</h3>
+                            <p class="mt-2 text-base text-gray-500">Share your experience and help the community by rating and reviewing tools you've used.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-white">
+        <div class="max-w-7xl mx-auto py-12 px-4 overflow-hidden sm:px-6 lg:px-8">
+            <p class="mt-8 text-center text-base text-gray-400">
+                &copy; 2025 Flare Tools. All rights reserved.
+            </p>
+        </div>
+    </footer>
+</body>
+</html>

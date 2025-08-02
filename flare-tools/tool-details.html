@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="page-title">Tool Details – Flare Tools</title>
+    <meta name="description" id="meta-description" content="Detailed information and reviews for this developer tool. Read user experiences, ratings, and see if it's the right tool for your development needs.">
+    <meta name="keywords" id="meta-keywords" content="developer tool, programming tool, software development, code review, tool rating">
+    <meta property="og:type" content="website">
+    <meta property="og:url" id="og-url" content="">
+    <meta property="og:title" id="og-title" content="Tool Details – Flare Tools">
+    <meta property="og:description" id="og-description" content="Detailed information and reviews for this developer tool. Read user experiences and ratings.">
+    <meta property="og:image" id="og-image" content="">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" id="twitter-title" content="Tool Details – Flare Tools">
+    <meta name="twitter:description" id="twitter-description" content="Detailed information and reviews for this developer tool. Read user experiences and ratings.">
+    <meta name="twitter:image" id="twitter-image" content="">
+    <link rel="canonical" id="canonical-url" href="">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .star-rating {
+            unicode-bidi: bidi-override;
+            color: #c5c5c5;
+            font-size: 25px;
+            position: relative;
+            margin: 0;
+            padding: 0;
+        }
+        .star-rating .star {
+            display: inline-block;
+            position: relative;
+            width: 1.1em;
+        }
+        .star-rating .filled {
+            color: #F59E0B;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <a href="index.html" class="text-xl font-bold text-indigo-600">Flare Tools</a>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <a href="index.html" class="px-4 py-2 text-sm font-medium text-gray-700 hover:text-indigo-600">Home</a>
+                    <a href="tools.html" class="px-4 py-2 text-sm font-medium text-indigo-600 border-b-2 border-indigo-500">Tools</a>
+                    <a href="submit-tool.html" class="px-4 py-2 text-sm font-medium text-gray-700 hover:text-indigo-600">Submit Tool</a>
+                    <a href="#" class="px-4 py-2 text-sm font-medium text-gray-700 hover:text-indigo-600">Sign In</a>
+                    <a href="#" class="px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-md hover:bg-indigo-700">Sign Up</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Tool Details Section -->
+    <div class="max-w-4xl mx-auto px-4 py-12 sm:px-6 lg:px-8">
+        <div id="loading" class="text-center py-12">
+            <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-500 mx-auto"></div>
+            <p class="mt-4 text-gray-600">Loading tool details...</p>
+        </div>
+
+        <div id="toolContainer" class="hidden bg-white shadow overflow-hidden rounded-lg">
+            <!-- Tool Header -->
+            <div class="px-6 py-5 border-b border-gray-200">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h1 id="toolName" class="text-2xl font-bold text-gray-900"></h1>
+                        <div class="mt-1 flex items-center">
+                            <div id="averageRating" class="star-rating">
+                                <!-- Stars will be inserted here by JavaScript -->
+                            </div>
+                            <span id="reviewCount" class="ml-2 text-sm text-gray-500"></span>
+                        </div>
+                    </div>
+                    <a id="toolWebsite" href="#" target="_blank" rel="noopener noreferrer" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700">
+                        Visit Website
+                    </a>
+                </div>
+            </div>
+
+            <!-- Tool Content -->
+            <div class="px-6 py-5">
+                <!-- Tool Image -->
+                <div id="toolImageContainer" class="mb-6 rounded-lg overflow-hidden hidden">
+                    <img id="toolImage" src="" alt="" class="w-full h-64 object-cover">
+                </div>
+
+                <!-- Description -->
+                <div class="mb-8">
+                    <h2 class="text-lg font-medium text-gray-900 mb-3">Description</h2>
+                    <p id="toolDescription" class="text-gray-700"></p>
+                </div>
+
+                <!-- Tags -->
+                <div class="mb-8">
+                    <h2 class="text-lg font-medium text-gray-900 mb-3">Tags</h2>
+                    <div id="toolTags" class="flex flex-wrap gap-2">
+                        <!-- Tags will be inserted here by JavaScript -->
+                    </div>
+                </div>
+
+                <!-- Reviews Section -->
+                <div class="border-t border-gray-200 pt-6">
+                    <h2 class="text-lg font-medium text-gray-900 mb-4">Reviews</h2>
+                    
+                    <!-- Add Review Form (Visible when logged in) -->
+                    <div id="reviewFormContainer" class="mb-8 p-4 bg-gray-50 rounded-lg hidden">
+                        <h3 class="text-md font-medium text-gray-900 mb-3">Write a Review</h3>
+                        <form id="reviewForm" class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Your Rating</label>
+                                <div class="flex items-center space-x-2 mb-2">
+                                    <div id="userRating" class="star-rating" data-rating="0">
+                                        <span class="star cursor-pointer" data-value="1">★</span>
+                                        <span class="star cursor-pointer" data-value="2">★</span>
+                                        <span class="star cursor-pointer" data-value="3">★</span>
+                                        <span class="star cursor-pointer" data-value="4">★</span>
+                                        <span class="star cursor-pointer" data-value="5">★</span>
+                                    </div>
+                                    <span id="ratingText" class="text-sm text-gray-500">Click to rate</span>
+                                </div>
+                            </div>
+                            <div>
+                                <label for="reviewText" class="block text-sm font-medium text-gray-700">Your Review</label>
+                                <textarea id="reviewText" name="review" rows="3" required 
+                                    class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                                    placeholder="Share your experience with this tool..."></textarea>
+                            </div>
+                            <div class="flex justify-end space-x-3">
+                                <button type="button" id="cancelReview" class="px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                                    Cancel
+                                </button>
+                                <button type="submit" class="px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700">
+                                    Submit Review
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                    
+                    <!-- Reviews List -->
+                    <div id="reviewsContainer" class="space-y-6">
+                        <!-- Reviews will be loaded here -->
+                        <p id="noReviews" class="text-gray-500 text-center py-4">No reviews yet. Be the first to leave a review!</p>
+                    </div>
+                    
+                    <!-- Login Prompt -->
+                    <div id="loginPrompt" class="text-center py-4 border-t border-gray-200 mt-6">
+                        <p class="text-sm text-gray-600">Please <a href="#" class="text-indigo-600 hover:text-indigo-800 font-medium">sign in</a> to leave a review.</p>
+                    </div>
+                </div>
+
+                <!-- Comments Section -->
+                <div class="mt-12 border-t border-gray-200 pt-6">
+                    <h2 class="text-lg font-medium text-gray-900 mb-4">Comments</h2>
+                    <div id="commentsContainer" class="space-y-4">
+                        <!-- Comments will be inserted here by JavaScript -->
+                        <p id="noComments" class="text-gray-500 text-center py-4">No comments yet. Be the first to leave a review!</p>
+                    </div>
+
+                    <!-- Add Comment Form -->
+                    <div class="mt-8">
+                        <h3 class="text-md font-medium text-gray-900 mb-3">Leave a Comment</h3>
+                        <form id="commentForm" class="space-y-4">
+                            <div>
+                                <label for="commentName" class="block text-sm font-medium text-gray-700">Name</label>
+                                <input type="text" id="commentName" name="name" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                            </div>
+                            <div>
+                                <label for="commentText" class="block text-sm font-medium text-gray-700">Comment</label>
+                                <textarea id="commentText" name="comment" rows="3" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"></textarea>
+                            </div>
+                            <div>
+                                <button type="submit" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                                    Post Comment
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Not Found Message -->
+        <div id="notFound" class="hidden text-center py-12">
+            <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <h3 class="mt-2 text-lg font-medium text-gray-900">Tool not found</h3>
+            <p class="mt-1 text-sm text-gray-500">The tool you're looking for doesn't exist or may have been removed.</p>
+            <div class="mt-6">
+                <a href="tools.html" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700">
+                    Browse All Tools
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const toolId = urlParams.get('id');
+            
+            if (!toolId) {
+                showNotFound();
+                return;
+            }
+
+            loadToolDetails(toolId);
+            setupStarRating(toolId);
+            setupReviewForm(toolId);
+            loadReviews(toolId);
+            
+            // Show/hide review form based on login status
+            const user = isUserLoggedIn() ? getCurrentUser() : null;
+            const reviewFormContainer = document.getElementById('reviewFormContainer');
+            const loginPrompt = document.getElementById('loginPrompt');
+            
+            if (user) {
+                reviewFormContainer.classList.remove('hidden');
+                loginPrompt.classList.add('hidden');
+            } else {
+                reviewFormContainer.classList.add('hidden');
+                loginPrompt.classList.remove('hidden');
+            }
+        });
+
+        function loadToolDetails(toolId) {
+            const tools = JSON.parse(localStorage.getItem('tools') || '[]');
+            const tool = tools.find(t => t.id === toolId);
+            
+            if (!tool) {
+                showNotFound();
+                return;
+            }
+
+            // Update meta tags and page title
+            const toolName = escapeHtml(tool.name);
+            const toolDescription = tool.description ? escapeHtml(tool.description.substring(0, 160)) : 'Detailed information and user reviews';
+            const pageUrl = `${window.location.origin}${window.location.pathname}?id=${toolId}`;
+            
+            // Update title and meta tags
+            document.title = `${toolName} – Developer Tool Review & Rating | Flare Tools`;
+            document.getElementById('page-title').textContent = `${toolName} – Developer Tool Review & Rating`;
+            document.getElementById('meta-description').setAttribute('content', `${toolDescription.substring(0, 155)}...`);
+            document.getElementById('og-title').setAttribute('content', `${toolName} – Developer Tool Review & Rating`);
+            document.getElementById('og-description').setAttribute('content', toolDescription);
+            document.getElementById('og-url').setAttribute('content', pageUrl);
+            document.getElementById('twitter-title').setAttribute('content', `${toolName} – Developer Tool Review & Rating`);
+            document.getElementById('twitter-description').setAttribute('content', toolDescription);
+            document.getElementById('canonical-url').setAttribute('href', pageUrl);
+            
+            // Update image meta tags if tool has an image
+            if (tool.image) {
+                document.getElementById('og-image').setAttribute('content', tool.image);
+                document.getElementById('twitter-image').setAttribute('content', tool.image);
+            }
+            
+            // Update tool details
+            document.getElementById('toolName').textContent = tool.name;
+            document.getElementById('toolDescription').textContent = tool.description || 'No description available.';
+            
+            // Update website link
+            const websiteLink = document.getElementById('toolWebsite');
+            if (tool.website) {
+                websiteLink.href = tool.website;
+            } else {
+                websiteLink.classList.add('hidden');
+            }
+            
+            // Update image
+            const imageContainer = document.getElementById('toolImageContainer');
+            const toolImage = document.getElementById('toolImage');
+            if (tool.image) {
+                toolImage.src = tool.image;
+                toolImage.alt = tool.name;
+                imageContainer.classList.remove('hidden');
+            } else {
+                imageContainer.classList.add('hidden');
+            }
+            
+            // Update tags
+            const tagsContainer = document.getElementById('toolTags');
+            if (tool.tags && tool.tags.length > 0) {
+                tagsContainer.innerHTML = tool.tags.map(tag => 
+                    `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800">
+                        ${escapeHtml(tag)}
+                    </span>`
+                ).join('');
+            } else {
+                tagsContainer.innerHTML = '<span class="text-gray-500">No tags</span>';
+            }
+            
+            // Load ratings and comments
+            updateRatings(tool);
+            loadComments(toolId);
+            
+            // Show the tool container
+            document.getElementById('loading').classList.add('hidden');
+            document.getElementById('toolContainer').classList.remove('hidden');
+        }
+
+        function updateRatings(tool) {
+            const avgRating = tool.averageRating || 0;
+            const ratingCount = tool.ratings ? tool.ratings.length : 0;
+            
+            // Update average rating display
+            const ratingContainer = document.getElementById('averageRating');
+            ratingContainer.innerHTML = '';
+            
+            for (let i = 1; i <= 5; i++) {
+                const star = document.createElement('span');
+                star.className = `star ${i <= Math.round(avgRating) ? 'filled' : ''}`;
+                star.innerHTML = '★';
+                ratingContainer.appendChild(star);
+            }
+            
+            // Update review count
+            document.getElementById('reviewCount').textContent = 
+                ratingCount === 0 ? 'No reviews yet' : 
+                `(${avgRating.toFixed(1)} · ${ratingCount} ${ratingCount === 1 ? 'review' : 'reviews'})`;
+        }
+
+        function loadComments(toolId) {
+            const comments = JSON.parse(localStorage.getItem(`comments_${toolId}`) || '[]');
+            const commentsContainer = document.getElementById('commentsContainer');
+            const noCommentsMsg = document.getElementById('noComments');
+            
+            if (comments.length === 0) {
+                noCommentsMsg.classList.remove('hidden');
+                return;
+            }
+            
+            noCommentsMsg.classList.add('hidden');
+            commentsContainer.innerHTML = '';
+            
+            comments.forEach(comment => {
+                const commentElement = document.createElement('div');
+                commentElement.className = 'bg-gray-50 p-4 rounded-lg';
+                commentElement.innerHTML = `
+                    <div class="flex items-center justify-between">
+                        <h4 class="font-medium text-gray-900">${escapeHtml(comment.name)}</h4>
+                        <span class="text-sm text-gray-500">${new Date(comment.date).toLocaleDateString()}</span>
+                    </div>
+                    <div class="mt-1">
+                        <p class="text-gray-700">${escapeHtml(comment.text)}</p>
+                    </div>
+                `;
+                commentsContainer.appendChild(commentElement);
+            });
+        }
+
+        function setupStarRating() {
+            const stars = document.querySelectorAll('#userRating .star');
+            const ratingText = document.getElementById('ratingText');
+            const submitButton = document.getElementById('submitRating');
+            let selectedRating = 0;
+            
+            stars.forEach(star => {
+                star.addEventListener('mouseover', () => {
+                    const value = parseInt(star.getAttribute('data-value'));
+                    updateStarRating(value);
+                });
+                
+                star.addEventListener('click', () => {
+                    selectedRating = parseInt(star.getAttribute('data-value'));
+                    updateStarRating(selectedRating);
+                    submitButton.disabled = false;
+                });
+                
+                star.addEventListener('mouseout', () => {
+                    updateStarRating(selectedRating);
+                });
+            });
+            
+            function updateStarRating(rating) {
+                const stars = document.querySelectorAll('#userRating .star');
+                stars.forEach(star => {
+                    const value = parseInt(star.getAttribute('data-value'));
+                    if (value <= rating) {
+                        star.classList.add('filled');
+                    } else {
+                        star.classList.remove('filled');
+                    }
+                });
+                
+                const ratingTexts = [
+                    'Very Poor',
+                    'Poor',
+                    'Average',
+                    'Good',
+                    'Excellent'
+                ];
+                
+                ratingText.textContent = rating > 0 ? ratingTexts[rating - 1] : 'Click to rate';
+            }
+            
+            submitButton.addEventListener('click', () => {
+                if (selectedRating > 0) {
+                    saveRating(selectedRating);
+                }
+            });
+        }
+        
+        function saveRating(rating) {
+            const urlParams = new URLSearchParams(window.location.search);
+            const toolId = urlParams.get('id');
+            
+            if (!toolId) return;
+            
+            const tools = JSON.parse(localStorage.getItem('tools') || '[]');
+            const toolIndex = tools.findIndex(t => t.id === toolId);
+            
+            if (toolIndex === -1) return;
+            
+            // Initialize ratings array if it doesn't exist
+            if (!tools[toolIndex].ratings) {
+                tools[toolIndex].ratings = [];
+            }
+            
+            // Add new rating
+            tools[toolIndex].ratings.push(rating);
+            
+            // Calculate new average
+            const sum = tools[toolIndex].ratings.reduce((a, b) => a + b, 0);
+            tools[toolIndex].averageRating = sum / tools[toolIndex].ratings.length;
+            
+            // Save back to localStorage
+            localStorage.setItem('tools', JSON.stringify(tools));
+            
+            // Update UI
+            updateRatings(tools[toolIndex]);
+            
+            // Reset rating UI
+            document.querySelectorAll('#userRating .star').forEach(star => {
+                star.classList.remove('filled');
+            });
+            document.getElementById('ratingText').textContent = 'Thanks for your rating!';
+            document.getElementById('submitRating').disabled = true;
+            
+            // Show success message
+            alert('Thank you for your rating!');
+        }
+        
+        function setupCommentForm(toolId) {
+            const form = document.getElementById('commentForm');
+            
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const nameInput = document.getElementById('commentName');
+                const commentInput = document.getElementById('commentText');
+                
+                const comment = {
+                    name: nameInput.value.trim(),
+                    text: commentInput.value.trim(),
+                    date: new Date().toISOString()
+                };
+                
+                if (!comment.name || !comment.text) {
+                    alert('Please fill in all fields');
+                    return;
+                }
+                
+                // Get existing comments or initialize empty array
+                const comments = JSON.parse(localStorage.getItem(`comments_${toolId}`) || '[]');
+                
+                // Add new comment
+                comments.unshift(comment);
+                
+                // Save back to localStorage
+                localStorage.setItem(`comments_${toolId}`, JSON.stringify(comments));
+                
+                // Update comments display
+                loadComments(toolId);
+                
+                // Reset form
+                form.reset();
+                
+                // Show success message
+                alert('Thank you for your comment!');
+            });
+        }
+        
+        // Save a new review
+        function saveReview(toolId, review) {
+            const reviews = JSON.parse(localStorage.getItem(`reviews_${toolId}`) || '[]');
+            reviews.unshift({
+                id: 'review_' + Date.now(),
+                ...review,
+                createdAt: new Date().toISOString()
+            });
+            localStorage.setItem(`reviews_${toolId}`, JSON.stringify(reviews));
+            return reviews;
+        }
+
+        // Load reviews for a tool
+        function loadReviews(toolId) {
+            const reviews = JSON.parse(localStorage.getItem(`reviews_${toolId}`) || '[]');
+            const container = document.getElementById('reviewsContainer');
+            const noReviewsMsg = document.getElementById('noReviews');
+            
+            if (reviews.length === 0) {
+                noReviewsMsg.classList.remove('hidden');
+                container.innerHTML = '';
+                container.appendChild(noReviewsMsg);
+                return;
+            }
+            
+            noReviewsMsg.classList.add('hidden');
+            container.innerHTML = '';
+            
+            // Calculate average rating
+            const totalRating = reviews.reduce((sum, review) => sum + review.rating, 0);
+            const averageRating = totalRating / reviews.length;
+            
+            // Update the tool's average rating
+            updateToolRating(toolId, averageRating, reviews.length);
+            
+            // Render each review
+            reviews.forEach(review => {
+                const reviewElement = document.createElement('div');
+                reviewElement.className = 'bg-white p-4 rounded-lg shadow-sm border border-gray-100';
+                reviewElement.innerHTML = `
+                    <div class="flex items-start justify-between">
+                        <div class="flex items-center">
+                            <div class="flex-shrink-0 h-10 w-10 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600 font-medium">
+                                ${review.userName.charAt(0).toUpperCase()}
+                            </div>
+                            <div class="ml-3">
+                                <p class="text-sm font-medium text-gray-900">${escapeHtml(review.userName)}</p>
+                                <div class="flex items-center">
+                                    <div class="star-rating">
+                                        ${'<span class="star filled">★</span>'.repeat(review.rating)}
+                                        ${'<span class="star">★</span>'.repeat(5 - review.rating)}
+                                    </div>
+                                    <span class="text-xs text-gray-500 ml-1">${new Date(review.createdAt).toLocaleDateString()}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-2 text-sm text-gray-700">
+                        <p>${escapeHtml(review.comment)}</p>
+                    </div>
+                `;
+                container.appendChild(reviewElement);
+            });
+        }
+        
+        // Update tool's average rating
+        function updateToolRating(toolId, averageRating, reviewCount) {
+            const tools = JSON.parse(localStorage.getItem('tools') || '[]');
+            const toolIndex = tools.findIndex(t => t.id === toolId);
+            
+            if (toolIndex !== -1) {
+                tools[toolIndex].averageRating = averageRating;
+                tools[toolIndex].reviewCount = reviewCount;
+                localStorage.setItem('tools', JSON.stringify(tools));
+                
+                // Update the UI
+                const ratingContainer = document.getElementById('averageRating');
+                const reviewCountEl = document.getElementById('reviewCount');
+                
+                if (ratingContainer) {
+                    ratingContainer.innerHTML = '';
+                    for (let i = 1; i <= 5; i++) {
+                        const star = document.createElement('span');
+                        star.className = `star ${i <= Math.round(averageRating) ? 'filled' : ''}`;
+                        star.innerHTML = '★';
+                        ratingContainer.appendChild(star);
+                    }
+                }
+                
+                if (reviewCountEl) {
+                    reviewCountEl.textContent = `(${averageRating.toFixed(1)} · ${reviewCount} ${reviewCount === 1 ? 'review' : 'reviews'})`;
+                }
+            }
+        }
+        
+        // Set up the review form
+        function setupReviewForm(toolId) {
+            const form = document.getElementById('reviewForm');
+            const cancelBtn = document.getElementById('cancelReview');
+            let selectedRating = 0;
+            
+            // Star rating interaction
+            const stars = document.querySelectorAll('#userRating .star');
+            const ratingText = document.getElementById('ratingText');
+            
+            stars.forEach(star => {
+                star.addEventListener('mouseover', (e) => {
+                    const value = parseInt(e.target.getAttribute('data-value'));
+                    updateStarRating(stars, value);
+                    updateRatingText(value);
+                });
+                
+                star.addEventListener('click', (e) => {
+                    selectedRating = parseInt(e.target.getAttribute('data-value'));
+                    updateStarRating(stars, selectedRating);
+                    updateRatingText(selectedRating);
+                });
+            });
+            
+            document.querySelector('#userRating').addEventListener('mouseleave', () => {
+                updateStarRating(stars, selectedRating);
+                updateRatingText(selectedRating);
+            });
+            
+            // Form submission
+            form.addEventListener('submit', (e) => {
+                e.preventDefault();
+                
+                if (selectedRating === 0) {
+                    alert('Please select a rating');
+                    return;
+                }
+                
+                const comment = document.getElementById('reviewText').value.trim();
+                if (!comment) {
+                    alert('Please enter your review');
+                    return;
+                }
+                
+                const user = getCurrentUser();
+                const review = {
+                    rating: selectedRating,
+                    comment: comment,
+                    userId: user.id,
+                    userName: user.name,
+                    userEmail: user.email
+                };
+                
+                saveReview(toolId, review);
+                loadReviews(toolId);
+                
+                // Reset form
+                form.reset();
+                selectedRating = 0;
+                updateStarRating(stars, 0);
+                updateRatingText(0);
+                
+                // Show success message
+                alert('Thank you for your review!');
+            });
+            
+            // Cancel button
+            cancelBtn.addEventListener('click', () => {
+                form.reset();
+                selectedRating = 0;
+                updateStarRating(stars, 0);
+                updateRatingText(0);
+            });
+            
+            function updateStarRating(stars, rating) {
+                stars.forEach(star => {
+                    const value = parseInt(star.getAttribute('data-value'));
+                    star.classList.toggle('filled', value <= rating);
+                });
+            }
+            
+            function updateRatingText(rating) {
+                const texts = [
+                    'Click to rate',
+                    'Poor',
+                    'Fair',
+                    'Good',
+                    'Very Good',
+                    'Excellent'
+                ];
+                ratingText.textContent = texts[rating];
+            }
+        }
+        
+        function showNotFound() {
+            document.getElementById('loading').classList.add('hidden');
+            document.getElementById('notFound').classList.remove('hidden');
+        }
+        
+        // Helper function to escape HTML
+        function escapeHtml(unsafe) {
+            if (!unsafe) return '';
+            return unsafe
+                .toString()
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="page-title">Developer Tools – Flare Tools</title>
+    <meta name="description" content="Browse and discover the best developer tools. Read reviews, compare features, and find the perfect tools for your development workflow.">
+    <meta name="keywords" content="developer tools, programming tools, development tools, code tools, software development, developer resources">
+    <meta property="og:title" content="Developer Tools – Flare Tools">
+    <meta property="og:description" content="Discover and review the best developer tools for your projects. Join our community of developers sharing their experiences.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://flare-tools.example.com/tools">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Developer Tools – Flare Tools">
+    <meta name="twitter:description" content="Find and review the best developer tools for your development workflow.">
+    <link rel="canonical" href="https://flare-tools.example.com/tools">
+    <!-- Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-auth-compat.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Custom Scripts -->
+    <script src="js/auth.js"></script>
+    <script src="js/nav.js"></script>
+    <script src="js/votes.js"></script>
+    <script>
+        // Initialize Firebase
+        const firebaseConfig = {
+            // Your Firebase config here
+            apiKey: "YOUR_API_KEY",
+            authDomain: "your-app.firebaseapp.com",
+            projectId: "your-project-id",
+            storageBucket: "your-app.appspot.com",
+            messagingSenderId: "1234567890",
+            appId: "1:1234567890:web:abcdef123456"
+        };
+        
+        if (!firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
+        }
+        
+        // Initialize Firestore
+        const db = firebase.firestore();
+        
+        // Get URL parameters
+        function getUrlParameter(name) {
+            name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
+            const regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
+            const results = regex.exec(location.search);
+            return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
+        }
+
+        // Load tools from Firestore
+        async function loadTools() {
+            try {
+                const toolsContainer = document.getElementById('tools-container');
+                toolsContainer.innerHTML = '<div class="text-center py-8">Loading tools...</div>';
+                
+                // Get category from URL if present
+                const category = getUrlParameter('category');
+                const backButton = document.getElementById('back-to-categories');
+                const pageTitleText = document.getElementById('page-title-text');
+                
+                // Update page title and description based on category
+                if (category) {
+                    const categoryName = category.charAt(0).toUpperCase() + category.slice(1).replace('-', '/');
+                    const displayName = categoryName.replace('Ml', 'ML'); // Fix case for AI/ML
+                    
+                    // Update meta tags
+                    document.title = `${displayName} Developer Tools – Flare Tools`;
+                    document.querySelector('meta[name="description"]').content = 
+                        `Browse the best ${displayName} developer tools. Find, compare, and review ${displayName.toLowerCase()} tools for your projects.`;
+                    document.querySelector('meta[property="og:title"]').content = `${displayName} Developer Tools – Flare Tools`;
+                    document.querySelector('meta[property="og:description"]').content = 
+                        `Discover and review the best ${displayName} developer tools for your projects.`;
+                    document.querySelector('meta[name="twitter:title"]').content = `${displayName} Developer Tools – Flare Tools`;
+                    document.querySelector('meta[name="twitter:description"]').content = 
+                        `Find and review the best ${displayName} developer tools for your development workflow.`;
+                    
+                    // Update the page heading and show back button
+                    if (pageTitleText) {
+                        pageTitleText.textContent = `${displayName} Developer Tools`;
+                    }
+                    if (backButton) {
+                        backButton.classList.remove('hidden');
+                    }
+                    
+                    // Set the selected category in the filter dropdown
+                    const categoryFilter = document.getElementById('filter-category');
+                    if (categoryFilter) {
+                        categoryFilter.value = category;
+                    }
+                }
+                
+                // Build the query
+                let query = db.collection('tools');
+                
+                // Filter by category if specified
+                if (category) {
+                    query = query.where('category', '==', category);
+                }
+                
+                // Order by upvotes and get the results
+                const querySnapshot = await query.orderBy('upvotes', 'desc').get();
+                
+                if (querySnapshot.empty) {
+                    toolsContainer.innerHTML = `
+                        <div class="text-center py-12">
+                            <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                            <h3 class="mt-2 text-lg font-medium text-gray-900">No tools found</h3>
+                            <p class="mt-1 text-sm text-gray-500">Be the first to submit a developer tool!</p>
+                            <div class="mt-6">
+                                <a href="submit-tool.html" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                                    Submit a Tool
+                                </a>
+                            </div>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                // Get current user's votes
+                let userVotes = [];
+                if (firebase.auth().currentUser) {
+                    userVotes = await voteManager.getUserVotes();
+                }
+                
+                // Render tools
+                toolsContainer.innerHTML = '';
+                querySnapshot.forEach((doc) => {
+                    const tool = { id: doc.id, ...doc.data() };
+                    const hasVoted = userVotes.includes(tool.id);
+                    toolsContainer.appendChild(createToolCard(tool, hasVoted));
+                });
+                
+                // Add event listeners to upvote buttons
+                document.querySelectorAll('.upvote-btn').forEach(button => {
+                    button.addEventListener('click', handleUpvote);
+                });
+                
+            } catch (error) {
+                console.error('Error loading tools:', error);
+                document.getElementById('tools-container').innerHTML = `
+                    <div class="text-center py-12 text-red-600">
+                        Error loading tools. Please try again later.
+                    </div>
+                `;
+            }
+        }
+        
+        // Create tool card HTML
+        function createToolCard(tool, hasVoted = false) {
+            const card = document.createElement('div');
+            card.className = 'bg-white rounded-lg shadow overflow-hidden transition-all duration-200 hover:shadow-md';
+            card.dataset.toolId = tool.id;
+            
+            // Get average rating or default to 0
+            const avgRating = tool.rating ? Math.round(tool.rating * 10) / 10 : 0;
+            const fullStars = Math.floor(avgRating);
+            const hasHalfStar = avgRating % 1 >= 0.5;
+            const emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0);
+            
+            // Generate stars HTML
+            let starsHtml = '';
+            for (let i = 0; i < fullStars; i++) {
+                starsHtml += '<span class="text-yellow-400">★</span>';
+            }
+            if (hasHalfStar) {
+                starsHtml += '<span class="text-yellow-400">½</span>';
+            }
+            for (let i = 0; i < emptyStars; i++) {
+                starsHtml += '<span class="text-gray-300">★</span>';
+            }
+            
+            card.innerHTML = `
+                <div class="p-4 sm:p-5 md:p-6">
+                    <div class="flex items-start">
+                        <div class="flex-shrink-0 h-10 w-10 sm:h-12 sm:w-12 bg-gray-100 rounded-lg overflow-hidden flex items-center justify-center">
+                            <img class="h-8 w-8 sm:h-10 sm:w-10 object-contain" 
+                                 src="${tool.imageUrl || 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0iN0MzQTVFIj48cGF0aCBkPSJNMTIgMkM2LjQ3NyAyIDIgNi40NzcgMiAxMnM0LjQ3NyAxMCAxMCAxMCAxMC00LjQ3NyAxMC0xMFMxNy41MjMgMiAxMiAyeiIvPjwvc3ZnPg=='}" 
+                                 alt="${escapeHtml(tool.name)} logo" 
+                                 onerror="this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0iOUNBMUY2Ij48cGF0aCBkPSJNMTIgMkM2LjQ3NyAyIDIgNi40NzcgMiAxMnM0LjQ3NyAxMCAxMCAxMCAxMC00LjQ3NyAxMC0xMFMxNy41MjMgMiAxMiAyeiIvPjwvc3ZnPg=='"
+                                 loading="lazy">
+                        </div>
+                        <div class="ml-3 sm:ml-4 flex-1 min-w-0">
+                            <h3 class="text-base sm:text-lg font-semibold text-gray-900 truncate">
+                                ${escapeHtml(tool.name)}
+                            </h3>
+                            <p class="text-xs sm:text-sm text-gray-500 truncate">
+                                ${escapeHtml(tool.category || 'Uncategorized')}
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <p class="mt-2 sm:mt-3 text-sm sm:text-base text-gray-600 line-clamp-2 sm:line-clamp-3">
+                        ${escapeHtml(tool.description || 'No description available.')}
+                    </p>
+                    
+                    <div class="mt-3 sm:mt-4 flex flex-wrap items-center justify-between gap-2">
+                        <div class="flex items-center">
+                            <div class="flex items-center mr-2 text-yellow-400 text-sm sm:text-base">
+                                ${starsHtml}
+                            </div>
+                            <span class="text-xs sm:text-sm text-gray-500 whitespace-nowrap">
+                                (${tool.reviewCount || 0})
+                            </span>
+                        </div>
+                        
+                        <div class="flex items-center space-x-2">
+                            <button class="upvote-btn inline-flex items-center px-2.5 py-1 sm:px-3 sm:py-1.5 border border-gray-200 rounded-md text-xs sm:text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors ${hasVoted ? 'bg-gray-50' : ''}" 
+                                    data-tool-id="${tool.id}"
+                                    ${hasVoted ? 'disabled' : ''}>
+                                <svg class="-ml-0.5 mr-1 h-3.5 w-3.5 sm:h-4 sm:w-4 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M14.707 12.707a1 1 0 01-1.414 0L10 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 010 1.414z" clip-rule="evenodd" />
+                                </svg>
+                                <span class="font-medium">${tool.upvotes || 0}</span>
+                            </button>
+                            
+                            <a href="/tools/${tool.id}" class="inline-flex items-center px-2.5 py-1 sm:px-3 sm:py-1.5 border border-transparent rounded-md shadow-sm text-xs sm:text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-indigo-500 transition-colors">
+                                View
+                            </a>
+                        </div>
+                    </div>
+                    
+                    ${tool.tags && tool.tags.length > 0 ? `
+                        <div class="mt-3 flex flex-wrap gap-1.5">
+                            ${tool.tags.slice(0, 3).map(tag => `
+                                <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-indigo-100 text-indigo-800">
+                                    ${escapeHtml(tag)}
+                                </span>
+                            `).join('')}
+                            ${tool.tags.length > 3 ? `
+                                <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-500">
+                                    +${tool.tags.length - 3}
+                                </span>
+                            ` : ''}
+                        </div>
+                    ` : ''}
+                </div>
+            `;
+            
+            return card;
+        }
+        
+        // Handle upvote button click
+        async function handleUpvote(event) {
+            const button = event.currentTarget;
+            const toolId = button.dataset.toolId;
+            
+            // Disable button to prevent multiple clicks
+            button.disabled = true;
+            
+            try {
+                const result = await voteManager.addVote(toolId);
+                
+                if (result.success) {
+                    // Update UI
+                    const card = button.closest('[data-tool-id]');
+                    const upvoteCount = card.querySelector('.upvote-count');
+                    const currentCount = parseInt(upvoteCount.textContent, 10) || 0;
+                    upvoteCount.textContent = currentCount + 1;
+                    
+                    // Update button state
+                    button.classList.remove('text-gray-400', 'hover:text-indigo-500');
+                    button.classList.add('text-indigo-600');
+                } else {
+                    alert(result.error || 'Failed to add vote');
+                    button.disabled = false;
+                }
+            } catch (error) {
+                console.error('Error handling upvote:', error);
+                alert('An error occurred while processing your vote');
+                button.disabled = false;
+            }
+        }
+        
+        // Helper function to escape HTML
+        function escapeHtml(unsafe) {
+            if (!unsafe) return '';
+            return unsafe
+                .toString()
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
+        }
+        
+        // Load tools when the page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            // Initialize Firebase if not already initialized
+            if (!firebase.apps.length) {
+                firebase.initializeApp(firebaseConfig);
+            }
+            
+            // Load tools
+            loadTools();
+            
+            // Listen for auth state changes to update UI
+            firebase.auth().onAuthStateChanged((user) => {
+                if (user) {
+                    // Reload tools to update vote status
+                    loadTools();
+                }
+            });
+            
+            // Search functionality
+            const searchInput = document.getElementById('search');
+            if (searchInput) {
+                searchInput.addEventListener('input', (e) => {
+                    const searchTerm = e.target.value.toLowerCase();
+                    const toolCards = document.querySelectorAll('[data-tool-id]');
+                    
+                    toolCards.forEach(card => {
+                        const toolName = card.querySelector('h3').textContent.toLowerCase();
+                        const toolDesc = card.querySelector('p').textContent.toLowerCase();
+                        const toolTags = Array.from(card.querySelectorAll('span')).map(span => span.textContent.toLowerCase());
+                        
+                        const matches = toolName.includes(searchTerm) || 
+                                      toolDesc.includes(searchTerm) ||
+                                      toolTags.some(tag => tag.includes(searchTerm));
+                        
+                        card.style.display = matches ? 'block' : 'none';
+                    });
+                });
+            }
+        });
+    </script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+    </style>
+</head>
+    <!-- Navigation Component -->
+    <app-navigation></app-navigation>
+
+    <!-- Tools Section -->
+    <div class="bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <!-- Page Header with Back Button -->
+            <div class="relative mb-8">
+                <div class="flex items-center">
+                    <!-- Back button (only shown when viewing a category) -->
+                    <div id="back-to-categories" class="hidden mr-4">
+                        <a href="tools.html" class="inline-flex items-center text-sm font-medium text-indigo-600 hover:text-indigo-500">
+                            <svg class="mr-1 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                <path fill-rule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd" />
+                            </svg>
+                            All Categories
+                        </a>
+                    </div>
+                    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900">
+                        <span id="page-title-text">Developer Tools</span>
+                    </h1>
+                </div>
+                <p class="mt-1 text-sm sm:text-base text-gray-600">Discover and rate the best developer tools</p>
+            </div>
+
+            <!-- Search and Filter -->
+            <div class="mt-4 sm:mt-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
+                <div class="relative rounded-md shadow-sm w-full sm:max-w-xs">
+                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <svg class="h-4 w-4 sm:h-5 sm:w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd" />
+                        </svg>
+                    </div>
+                <input type="text" id="search" class="block w-full pl-8 sm:pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:ring-1 sm:focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm sm:text-base" placeholder="Search tools...">
+            </div>
+            <div class="flex flex-col sm:flex-row gap-3 sm:gap-4 w-full sm:w-auto">
+                <select id="filter-category" class="block w-full pl-3 pr-8 sm:pr-10 py-2 text-sm sm:text-base border border-gray-300 rounded-md focus:outline-none focus:ring-1 sm:focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 bg-white">
+                    <option value="">All Categories</option>
+                    <option value="frontend">Frontend</option>
+                    <option value="backend">Backend</option>
+                    <option value="mobile">Mobile</option>
+                    <option value="devops">DevOps</option>
+                    <option value="database">Database</option>
+                </select>
+                <button id="filter-btn" class="w-full sm:w-auto inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm sm:text-base font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                    Apply Filters
+                </button>
+            </div>
+        </div>
+
+        <!-- Tools Grid -->
+        <div id="tools-container" class="mt-6 sm:mt-8 grid gap-4 sm:gap-5 md:gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 px-2 sm:px-0">
+            <!-- Tools will be loaded here -->
+            <div class="col-span-full py-8 text-center">
+                <div class="animate-pulse space-y-4">
+                    <div class="h-4 bg-gray-200 rounded w-3/4 mx-auto"></div>
+                    <div class="h-4 bg-gray-200 rounded w-1/2 mx-auto"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- No Tools Message -->
+        <div id="noToolsMessage" class="text-center py-12 hidden">
+            <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M20 7l-8-4.5L4 7m16 0l-8 4.5M4 7v10l8 4.5m0-14.5v14.5m8-10v10l-8 4.5" />
+            </svg>
+            <h3 class="mt-2 text-lg font-medium text-gray-900">No tools found</h3>
+        </div>
+    </div>
+
+    <!-- Pagination -->
+    <div class="mt-6 sm:mt-8 px-2 sm:px-0">
+        <div class="flex items-center justify-between border-t border-gray-200 pt-4">
+            <div class="flex-1 flex justify-between sm:hidden">
+                <button class="relative inline-flex items-center px-3 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed" disabled>
+                    Previous
+                </button>
+                <button class="ml-3 relative inline-flex items-center px-3 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                    Next
+                </button>
+            </div>
+            <div class="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
+                <div class="text-sm text-gray-700">
+                    Showing <span class="font-medium">1</span> to <span class="font-medium">10</span> of <span class="font-medium">97</span> results
+                </div>
+                <div class="mt-2 sm:mt-0">
+                    <nav class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
+                        <button class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed" disabled>
+                            <span class="sr-only">Previous</span>
+                            <svg class="h-4 w-4 sm:h-5 sm:w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd" />
+                            </svg>
+                        </button>
+                        <button aria-current="page" class="z-10 bg-indigo-50 border-indigo-500 text-indigo-600 relative inline-flex items-center px-3 sm:px-4 py-2 border text-sm font-medium">
+                            1
+                        </button>
+                        <button class="bg-white border-gray-300 text-gray-500 hover:bg-gray-50 relative inline-flex items-center px-3 sm:px-4 py-2 border text-sm font-medium">
+                            2
+                        </button>
+                        <button class="bg-white border-gray-300 text-gray-500 hover:bg-gray-50 relative inline-flex items-center px-3 sm:px-4 py-2 border text-sm font-medium">
+                            3
+                        </button>
+                        <span class="relative inline-flex items-center px-3 sm:px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700">
+                            ...
+                        </span>
+                        <button class="bg-white border-gray-300 text-gray-500 hover:bg-gray-50 relative inline-flex items-center px-3 sm:px-4 py-2 border text-sm font-medium">
+                            8
+                        </button>
+                        <button class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                            <span class="sr-only">Next</span>
+                            <svg class="h-4 w-4 sm:h-5 sm:w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+                            </svg>
+                        </button>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-gray-200">
+        <div class="max-w-7xl mx-auto py-12 px-4 overflow-hidden sm:px-6 lg:px-8">
+            <p class="mt-8 text-center text-base text-gray-400">
+                &copy; 2025 Flare Tools. All rights reserved.
+            </p>
+        </div>
+    </footer>
+
+    <script>
+        // Helper function to escape HTML
+        function escapeHtml(unsafe) {
+            if (!unsafe) return '';
+            return unsafe
+                .toString()
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+
+        // Load and display tools
+        document.addEventListener('DOMContentLoaded', function() {
+            loadTools();
+        });
+
+        function loadTools() {
+            const tools = JSON.parse(localStorage.getItem('tools') || '[]');
+            const container = document.getElementById('toolsContainer');
+            const noToolsMessage = document.getElementById('noToolsMessage');
+            
+            // Clear existing content
+            container.innerHTML = '';
+            
+            if (tools.length === 0) {
+                noToolsMessage.classList.remove('hidden');
+                return;
+            }
+            
+            noToolsMessage.classList.add('hidden');
+            
+            // Sort tools by submission date (newest first)
+            tools.sort((a, b) => new Date(b.submittedAt) - new Date(a.submittedAt));
+            
+            // Create tool cards
+            tools.forEach(tool => {
+                const toolCard = document.createElement('div');
+                toolCard.className = 'bg-white overflow-hidden shadow rounded-lg flex flex-col h-full';
+                
+                // Format tags
+                const tagsHtml = tool.tags && tool.tags.length > 0 
+                    ? tool.tags.map(tag => `
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800">
+                            ${escapeHtml(tag)}
+                        </span>
+                    `).join(' ')
+                    : '';
+                
+                // Format date
+                const submissionDate = tool.submittedAt 
+                    ? new Date(tool.submittedAt).toLocaleDateString('en-US', { 
+                        year: 'numeric', 
+                        month: 'short', 
+                        day: 'numeric' 
+                    })
+                    : '';
+                
+                // Create tool card HTML
+                toolCard.innerHTML = `
+                    <div class="p-6 flex-1 flex flex-col">
+                        <div class="flex items-center justify-between">
+                            <a href="tool-details.html?id=${encodeURIComponent(tool.id)}" class="text-lg font-medium text-indigo-600 hover:text-indigo-800 hover:underline">
+                                ${escapeHtml(tool.name)}
+                            </a>
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                ${tool.upvotes || 0} upvotes
+                            </span>
+                        </div>
+                        ${tool.image ? `
+                            <div class="mt-4">
+                                <img src="${tool.image}" alt="${escapeHtml(tool.name)}" class="w-full h-32 object-cover rounded">
+                            </div>
+                        ` : ''}
+                        <p class="mt-3 text-sm text-gray-500 flex-1">${escapeHtml(tool.description || 'No description provided.')}</p>
+                        
+                        <div class="mt-4 flex flex-wrap gap-2">
+                            ${tagsHtml}
+                        </div>
+                        
+                        <div class="mt-4 flex items-center justify-between">
+                            <span class="text-xs text-gray-500">Added ${submissionDate}</span>
+                            <a href="#" class="text-sm font-medium text-indigo-600 hover:text-indigo-500">
+                                Rate this Tool
+                            </a>
+                        </div>
+                    </div>
+                `;
+                
+                // Add click handler for the website link
+                const websiteLink = toolCard.querySelector('a[href^="http"]');
+                if (websiteLink && tool.website) {
+                    websiteLink.href = tool.website;
+                    websiteLink.target = '_blank';
+                    websiteLink.rel = 'noopener noreferrer';
+                }
+                
+                container.appendChild(toolCard);
+            });
+        }
+        
+        function filterTools() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const tools = document.querySelectorAll('#toolsContainer > div.bg-white');
+            let visibleTools = 0;
+            
+            tools.forEach(tool => {
+                const toolText = tool.textContent.toLowerCase();
+                if (toolText.includes(searchTerm) || !searchTerm) {
+                    tool.style.display = '';
+                    visibleTools++;
+                } else {
+                    tool.style.display = 'none';
+                }
+            });
+            
+            const noToolsMessage = document.getElementById('noToolsMessage');
+            if (visibleTools === 0) {
+                noToolsMessage.classList.remove('hidden');
+            } else {
+                noToolsMessage.classList.add('hidden');
+            }
+        }
+    </script>
+</body>
+</html>
